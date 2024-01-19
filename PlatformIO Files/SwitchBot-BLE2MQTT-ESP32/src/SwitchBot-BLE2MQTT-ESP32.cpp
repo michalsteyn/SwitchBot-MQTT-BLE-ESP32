@@ -348,15 +348,15 @@
 /* Motion and Contact and Meter: (CAN BE MESHED) Enter the MAC addresses of the switchbot devices into all or most of the ESP32s */
 
 /* Wifi Settings */
-static const char* host = "esp32";                                  //  Unique name for ESP32. The name detected by your router and MQTT. If you are using more then 1 ESPs to control different switchbots be sure to use unique hostnames. Host is the MQTT Client name and is used in MQTT topics
-static const char* ssid = "SSID";                                   //  WIFI SSID
-static const char* password = "Password";                           //  WIFI Password
+static const char* host = "esp32sb";                                  //  Unique name for ESP32. The name detected by your router and MQTT. If you are using more then 1 ESPs to control different switchbots be sure to use unique hostnames. Host is the MQTT Client name and is used in MQTT topics
+static const char* ssid = "***";                                   //  WIFI SSID
+static const char* password = "***";                           //  WIFI Password
 
 /* MQTT Settings */
 /* MQTT Client name is set to WIFI host from Wifi Settings*/
-static const char* mqtt_host = "192.168.0.1";                       //  MQTT Broker server ip
-static const char* mqtt_user = "switchbot";                         //  MQTT Broker username. If empty or NULL, no authentication will be used
-static const char* mqtt_pass = "switchbot";                         //  MQTT Broker password
+static const char* mqtt_host = "192.168.1.130";                       //  MQTT Broker server ip
+static const char* mqtt_user = "";                         //  MQTT Broker username. If empty or NULL, no authentication will be used
+static const char* mqtt_pass = "";                         //  MQTT Broker password
 static const int mqtt_port = 1883;                                  //  MQTT Port
 static const std::string mqtt_main_topic = "switchbot";             //  MQTT main topic
 
@@ -378,8 +378,8 @@ static const int timeToIgnoreDuplicates = 30;                       // if a dupl
 
 /* Switchbot Bot Settings */
 static std::map<std::string, std::string> allBots = {
-  /*{ "switchbotone", "xX:xX:xX:xX:xX:xX" },
-    { "switchbottwo", "yY:yY:yY:yY:yY:yY" }*/
+  { "switchbotcoffee", "D5:35:34:35:4B:56" }
+  
 };
 
 /* Switchbot Curtain Settings */
@@ -422,6 +422,7 @@ static std::map<std::string, std::string> allPasswords = {     // Set all the bo
 /* Switchbot Bot Device Types - OPTIONAL */
 /* Options include: "switch", "light", "button" */
 static std::map<std::string, std::string> allBotTypes = {     // OPTIONAL - (DEFAULTS to "switch" if bot is not in list) - Will create HA entities for device types
+     { "switchbotcoffee", "button" }
   /* { "switchbotone", "switch" },
      { "switchbottwo", "light" },
      { "switchbotthree", "button" }*/
@@ -529,7 +530,7 @@ static const bool onlyPassiveScan = false;                   // If this ESP32 is
 static const bool alwaysActiveScan = false;                  // No battery optimizations. If you are using the switchbot hub or app to control devices also and you want immediate state updates for bot and curtains in MQTT set to true
 static const bool scanWhileCurtainIsMoving = true;           // The ESP32 will scan for defaultCurtainScanAfterControlSecs seconds after control to keep the position slider in sync with the actual position
 
-static const bool printSerialOutputForDebugging = false;     // Only set to true when you want to debug an issue from Arduino IDE. Lots of Serial output from scanning can crash the ESP32
+static const bool printSerialOutputForDebugging = true;     // Only set to true when you want to debug an issue from Arduino IDE. Lots of Serial output from scanning can crash the ESP32
 static bool manualDebugStartESP32WithMQTT = false;           // Only set to true when you want to debug an issue. ESP32 will boot in an OFF state when set to true. To start the ESP32 processing send any MQTT message to the topic ESPMQTTTopic/manualstart. This will make it easier to catch the last serial output of the ESP32 before crashing
 
 /* Switchbot Bot/Meter/Curtain scan interval */
@@ -4270,7 +4271,8 @@ void setup () {
   printAString("");
 
   // Wait for connection
-  /*while (WiFi.status() != WL_CONNECTED) {
+  Serial.println("Going to Connect to WIFI");
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     if (printSerialOutputForDebugging) {
       Serial.print(".");
@@ -4283,7 +4285,7 @@ void setup () {
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     }
-  */
+  
   /*use mdns for host name resolution*/
   /*  if (!MDNS.begin(host)) { //http://esp32.local
       if (printSerialOutputForDebugging) {
